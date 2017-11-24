@@ -37,14 +37,14 @@ void System::applyPeriodicBoundaryConditions() {
         if (a->position(1) < 0){
             a->position(1) += systemSize().y();
         }
-        else if (a->position(1) >= systemSize().y()/2){
+        else if (a->position(1) >= systemSize().y()){
             a->position(1) -= systemSize().y();
         }
 
         if (a->position(2) < 0){
             a->position(2) += systemSize().z();
         }
-        else if (a->position(2) >= systemSize().z()/2){
+        else if (a->position(2) >= systemSize().z()){
             a->position(2) -= systemSize().z();
         }
 
@@ -132,7 +132,6 @@ void System::createFCCLattice(int numberOfUnitCellsEachDimension, double lattice
             } //End k-loop
         } //End j-loop
     } //End i-loop
-
 
     //Set systemsize:
     //setSystemSize(vec3(systemSize().x(), systemSize().y(), systemSize().z())); // Remember to set the correct system size!
