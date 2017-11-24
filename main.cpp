@@ -17,7 +17,8 @@ using namespace std;
 
 int main(int numberOfArguments, char **argumentList)
 {
-    int numberOfUnitCells = 5;  //Want to make a cube out of several unit cells
+    int numberOfUnitCells = 5;  //In each dimension?   Want to make a cube out of several unit cells
+    double k = 1.0; //Boltzmanns constant
     double initialTemperature = UnitConverter::temperatureFromSI(300.0); // measured in Kelvin
     double latticeConstant = UnitConverter::lengthFromAngstroms(5.26); // measured in angstroms
 
@@ -41,14 +42,14 @@ int main(int numberOfArguments, char **argumentList)
     //Func that creates lattice and places the atoms in random positions in it:
     system.createFCCLattice(numberOfUnitCells, latticeConstant, initialTemperature); //latticeconstant=b is the size of the unit cells
 
-    system.potential().setEpsilon(1.0); //Sets episilon equal to 1.0?
-    system.potential().setSigma(1.0); //Sets sigma equal to 1.0?
+    system.potential().setEpsilon(119.8*k); //Sets episilon equal to 1.0?
+    system.potential().setSigma(1.0); //Sets sigma equal to 1.0? 3.405
 
     //Func that make total momentum of system equal to zero
     system.removeTotalMomentum();
     //std::cout << "Totalt moment:" << totalMomentum << std::endl;
 
-    StatisticsSampler statisticsSampler;
+    StatisticsSampler statisticsSampler; //Make object of the class StatisticsSampler
     IO movie("movie.xyz"); // To write the state to file
 
     cout << setw(20) << "Timestep" <<
@@ -59,7 +60,7 @@ int main(int numberOfArguments, char **argumentList)
             setw(20) << "TotalEnergy" << endl;
     for(int timestep=0; timestep<1000; timestep++) {
         system.step(dt); //The step function integrates with velocity verlet?
-        statisticsSampler.sample(system);
+        statisticsSampler.sample(system); //This function calls on all the functions in the statisticsSampler class (like sampleDensity)
         //Prints out parameters for every 100th timestep
         if( timestep % 100 == 0 ) {
             // Print the timestep every 100 timesteps

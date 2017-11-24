@@ -27,21 +27,21 @@ void System::applyPeriodicBoundaryConditions() {
 
         // 10 is latticesize, needs to be changed.
         // Positions should not larger than 5 or less than -5
-        if (a->position(0) < -systemSize().x()/2){
+        if (a->position(0) < 0 ){
             a->position(0) += systemSize().x();
         }
-        else if (a->position(0) >= systemSize().x()/2){
+        else if (a->position(0) >= systemSize().x()){
             a->position(0) -= systemSize().x();
         }
 
-        if (a->position(1) < -systemSize().y()/2){
+        if (a->position(1) < 0){
             a->position(1) += systemSize().y();
         }
         else if (a->position(1) >= systemSize().y()/2){
             a->position(1) -= systemSize().y();
         }
 
-        if (a->position(2) < -systemSize().z()/2){
+        if (a->position(2) < 0){
             a->position(2) += systemSize().z();
         }
         else if (a->position(2) >= systemSize().z()/2){
@@ -61,7 +61,7 @@ void System::removeTotalMomentum() {
     averageVelocity.zeros();
     totalVelocity.zeros();
 
-    int numberOfAtoms = m_atoms.size();
+    numberOfAtoms = m_atoms.size();
 
     for (int i=0; i < numberOfAtoms; i++){ //Loop through all atoms
         Atom * atom = m_atoms[i];
@@ -83,10 +83,12 @@ void System::removeTotalMomentum() {
 //Function FCCLattice creates the lattice consisting of N unit cells in each dimension, and places out atoms with initial pos and vel.
 void System::createFCCLattice(int numberOfUnitCellsEachDimension, double latticeConstant, double temperature) {//A lattice is built up by unit cells
     // You should implement this function properly. Right now, 100 atoms are created uniformly placed in the system of size (10, 10, 10).
-    double b = latticeConstant;
-    int N = numberOfUnitCellsEachDimension;
+    b = latticeConstant;
+    N = numberOfUnitCellsEachDimension;
+    setSystemSize(vec3(b*N, b*N, b*N)); //Evt slik
     //std::cout << m_atoms.size() << std::endl;
 
+    /*
     for(int i=0; i<100; i++) {
         Atom *atom = new Atom(UnitConverter::massFromSI(6.63352088e-26));
         double x = Random::nextDouble(0, 10); // random number in the interval [0,10]
@@ -97,8 +99,7 @@ void System::createFCCLattice(int numberOfUnitCellsEachDimension, double lattice
         m_atoms.push_back(atom);
     }
     setSystemSize(vec3(10, 10, 10)); // Remember to set the correct system size!
-
-    /*
+    */
 
     //Oppg c) :
     for(int i=0; i<N; i++){ //x-direction
@@ -111,10 +112,10 @@ void System::createFCCLattice(int numberOfUnitCellsEachDimension, double lattice
                 Atom *atom4 = new Atom(UnitConverter::massFromSI(6.63352088e-26));
 
                 //Set initial positions of all atoms
-                atom1->position.set(i*b, j*b, k*b);
-                atom2->position.set((0.5+i)*b, (0.5+j)*b, k*b);
-                atom3->position.set();
-                atom4->position.set();
+                atom1->position.set( i*b, j*b, k*b);
+                atom2->position.set( (0.5+i)*b, (0.5+j)*b, k*b );
+                atom3->position.set( i*b, b*(0.5+j), b*(0.5+k) );
+                atom4->position.set( b*(0.5+i), j*b, b*(0.5+k) );
 
                 //Set initial velocity of all atoms. Given by a Maxwellian velocity distribution
                 atom1->resetVelocityMaxwellian(temperature);
@@ -132,11 +133,9 @@ void System::createFCCLattice(int numberOfUnitCellsEachDimension, double lattice
         } //End j-loop
     } //End i-loop
 
-    */
 
     //Set systemsize:
     //setSystemSize(vec3(systemSize().x(), systemSize().y(), systemSize().z())); // Remember to set the correct system size!
-    //setSystemSize(vec3(b*N, b*N, b*N)); //Evt slik
 }//End create FCCLattice func
 
 void System::calculateForces() {
@@ -152,3 +151,4 @@ void System::step(double dt) {
     m_steps++;
     m_time += dt;
 }//End step function
+
